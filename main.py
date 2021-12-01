@@ -24,9 +24,9 @@ def get_template_string():
         raise ValueError('Training data length mismatch!')
         os.exit(1)
 
-    for i in range(len(english_data)):
-        ret += 'Chinese: ' + chinese_data[i] + '\n\n'
-        ret += 'English: ' + english_data[i] + '\n'
+    for i in range(len(english_data) - 1):
+        ret += 'Chinese: ' + chinese_data[i] + '\n'
+        ret += 'English: ' + english_data[i] + '\n\n'
 
     return ret
 
@@ -47,17 +47,19 @@ def get_input_string():
 def main():
     # Make sure we can actually get the model to work
     if openai.Engine.retrieve(openai_engine)['ready'] is not True:
-        raise Exception('Couldn\'t get OpenAI engine!'')
+        raise Exception('Couldn\'t get OpenAI engine!')
         os.exit(1)
 
     # Get in training data
     prompt_string = get_template_string() + get_input_string()
 
+    print('Prompt:\n' + prompt_string)
+
     # Generate the completion with GPT-3
     resp = openai.Completion.create(
         engine=openai_engine,
         prompt=prompt_string,
-        max_tokens=64
+        max_tokens=32
     )
 
     # Print it out!
